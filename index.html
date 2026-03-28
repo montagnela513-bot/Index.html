@@ -195,15 +195,59 @@ function renderHeaderMember(){const btn=document.getElementById("memberEntryBtn"
 function syncMemberUIState(){renderHeaderMember(); localStorage.setItem("lm_current_member", JSON.stringify(currentMember||null));}
 async function refreshMemberFromServer(){if(!currentMember||!currentMember.email)return;const res=await fetch(`${SCRIPT_URL}?action=getMember&email=${encodeURIComponent(currentMember.email)}`).then(r=>r.json()).catch(()=>({ok:false}));if(res.ok&&res.member){currentMember=res.member;saveState();syncMemberUIState();renderCouponDropdown()}}
 
-async function loadTimeSlotsForSelectedDate(resetValue=true){
-  const selectedDate=document.getElementById("pickupDate").value;
-  const select=document.getElementById("pickupTime");
-  if(!selectedDate){initTimeOptions(); return;}
-  const res=await fetch(`${SCRIPT_URL}?action=getTimeSlots&date=${encodeURIComponent(selectedDate)}`).then(r=>r.json()).catch(()=>({ok:false,slots:[]}));
-  const slots=(res.ok&&Array.isArray(res.slots)&&res.slots.length)?res.slots:[];
-  const prev=select.value;
-  select.innerHTML=['<option value="">請選擇</option>'].concat(slots.map(v=>`<option value="${v}">${v}</option>`)).join('');
-  if(!resetValue && prev && slots.includes(prev)) select.value=prev;
+let isLoadingTimeSlots = false;
+
+async function loadTimeSlotsForSelectedDate(resetValue = true) {
+  const selectedDate = document.getElementById("pickupDate").value;
+  const select = document.getElementById("pickupTime");
+  const checkoutBtn = document.querySelector('button[onclick="goConfirm()"]');
+
+  if (!selectedDate) {
+    initTimeOptions();
+    select.disabled = true;
+    if (checkoutBtn) checkoutBtn.disabled = false;
+    isLoadingTimeSlots = false;
+    return;
+  }
+
+  isLoadingTimeSlots = true;
+  select.disabled = true;
+  if (checkoutBtn) checkoutBtn.disabled = true;
+
+  select.innerHTML = '<option value="">載入可選時段中...</option>';
+
+  const res = await fetch(
+    ${SCRIPT_URL}?action=getTimeSlots&date=${encodeURIComponent(selectedDate)}
+  )
+    .then(r => r.json())
+    .catch(() => ({ ok: false, slots: [] }));
+
+  const slots = (res.ok && Array.isArray(res.slots) && res.slots.length)
+    ? res.slots
+    : [];
+
+  const prev = select.value;
+
+  if (!slots.length) {
+    select.innerHTML = '<option value="">此日期目前沒有可選時段</option>';
+    select.disabled = true;
+    isLoadingTimeSlots = false;
+    if (checkoutBtn) checkoutBtn.disabled = false;
+    return;
+  }
+
+  select.innerHTML =
+    ['<option value="">請選擇取貨時間</option>']
+      .concat(slots.map(v => `<option value="${v}">${v}</option>`))
+      .join('');
+
+  if (!resetValue && prev && slots.includes(prev)) {
+    select.value = prev;
+  }
+
+  select.disabled = false;
+  isLoadingTimeSlots = false;
+  if (checkoutBtn) checkoutBtn.disabled = false;
 }
 
 async function loadInventoryForSelectedDate(force=false){
