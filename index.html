@@ -323,32 +323,50 @@ async function submitForgotPassword(){const res=await fetch(SCRIPT_URL,{method:"
 function initTimeOptions(){const select=document.getElementById('pickupTime'), opts=['']; for(let h=0;h<24;h++){['00','30'].forEach(m=>opts.push(`${String(h).padStart(2,'0')}:${m}`))} select.innerHTML=opts.map(v=>`<option value="${v}">${v||'請選擇'}</option>`).join('')}
 async function init(){
   initTimeOptions();
-  const today=new Date(); today.setHours(0,0,0,0);
-  const tomorrow=new Date(today.getTime()+24*60*60*1000);
 
-  document.getElementById("registerBirthday").max=new Date().toISOString().split("T")[0];
-  document.getElementById("proofTransferTime").max=getNowLocalDateTimeMax();
-  document.getElementById("customerPhone").value="09";
-  const remembered=localStorage.getItem("lm_remember_email");
-  if(remembered) document.getElementById("memberEmail").value=remembered;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const tomorrow = new Date(today);
+  tomorrow.setDate(today.getDate() + 1);
+
+  document.getElementById("registerBirthday").max = today.toISOString().split("T")[0];
+  document.getElementById("proofTransferTime").max = getNowLocalDateTimeMax();
+  document.getElementById("customerPhone").value = "09";
+
+  const remembered = localStorage.getItem("lm_remember_email");
+  if (remembered) document.getElementById("memberEmail").value = remembered;
 
   await loadClosedDates();
 
-  const pickupDateInput=document.getElementById("pickupDate");
-  pickupDateInput.min=tomorrow.toISOString().split("T")[0];
-  pickupDateInput.addEventListener("change", async ()=>{
-    const v=pickupDateInput.value;
-    if(isClosedDate(v)){
-      alert("這個日期目前不開放預約，請改選其他日期");
-      pickupDateInput.value="";
-      currentInventoryDate='';currentInventoryBase={...defaultStock};renderStock();
+  const pickupDateInput = document.getElementById("pickupDate");
+  pickupDateInput.min = tomorrow.toISOString().split("T")[0];
+
+  pickupDateInput.addEventListener("change", async () => {
+    const v = pickupDateInput.value;
+
+    if (!v) {
+      currentInventoryDate = '';
+      currentInventoryBase = { ...defaultStock };
+      renderStock();
       initTimeOptions();
       return;
     }
+
+    if (isClosedDate(v)) {
+      alert("這個日期目前不開放預約，請改選其他日期");
+      pickupDateInput.value = "";
+      currentInventoryDate = '';
+      currentInventoryBase = { ...defaultStock };
+      renderStock();
+      initTimeOptions();
+      return;
+    }
+
     await loadInventoryForSelectedDate(true);
     await loadTimeSlotsForSelectedDate(true);
   });
-
+}
   renderStock();
   renderCart();
   syncMemberUIState();
