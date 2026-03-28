@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>La Montagne Ultimate Plus</title>
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Noto+Serif+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f7f4;--card:#fff;--text:#2a2a2a;--muted:#7a7a7a;--line:#e9e9e4;--brand:#6f8f74;--brand-dark:#56715a;--shadow:0 10px 30px rgba(0,0,0,.06);--radius:14px;--danger:#b44}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:"Noto Serif TC",serif}
+.container{max-width:1180px;margin:0 auto;padding:36px 28px 80px}.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;gap:12px;flex-wrap:wrap}
+.logo{font-family:"Playfair Display",serif;font-size:34px}.tagline{font-size:13px;color:var(--muted);letter-spacing:1px}.header-right{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.header-pill,.primary-btn,.secondary-btn,.qty-btn,.mini-btn,.icon-btn,.toggle-pass-btn{border:none;font-family:inherit;cursor:pointer}
+.header-pill{background:#fff;box-shadow:var(--shadow);border-radius:999px;padding:10px 16px;font-size:14px}
+.hero,.section-card,.product-card,.drawer,.modal-box{background:#fff;box-shadow:var(--shadow)}
+.hero{margin:8px 0 26px;padding:26px 28px;border-radius:18px;background:linear-gradient(180deg,#fafaf8,#f2f4ef)}.hero h1{margin:0 0 6px;font-family:"Playfair Display",serif;font-size:36px}.hero p{margin:0;color:var(--muted)}
+.section-card{border-radius:var(--radius);padding:24px;margin-bottom:24px}.section-title{margin:0 0 18px;font-size:22px}
+.order-grid{display:grid;grid-template-columns:160px 1fr;gap:14px 18px;align-items:center;max-width:860px}.label{color:#444;font-size:15px}.required::after{content:" *";color:var(--danger)}
+input,select,textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:15px;font-family:inherit;background:#fff;color:var(--text)}
+.hidden{display:none!important}.product-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}.product-card{border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column}
+.product-card img{width:100%;height:220px;object-fit:cover;background:#eee}.product-body{padding:18px;display:flex;flex-direction:column;gap:12px}
+.product-title{margin:0;font-size:22px;font-family:"Playfair Display",serif}.product-sub{color:var(--muted);font-size:14px;margin-top:-4px}
+.stock-box{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#fbfbf9;color:#555;font-size:13px;line-height:1.9}
+.qty-row{display:flex;align-items:center;gap:10px}.qty-btn,.mini-btn{background:#eef3ee;color:#2f4935;border-radius:10px}.qty-btn{width:34px;height:34px;font-size:18px}.mini-btn{width:30px;height:30px}.qty-num{min-width:22px;text-align:center;font-size:16px}
+.primary-btn{background:var(--brand);color:#fff;padding:12px 16px;border-radius:999px;font-size:15px}.primary-btn:hover{background:var(--brand-dark)}.secondary-btn{background:#f0f2ee;color:#344;padding:12px 16px;border-radius:999px;font-size:15px}
+.cart-fab{position:fixed;right:22px;bottom:22px;background:#232323;color:#fff;border-radius:16px;padding:14px 18px;box-shadow:0 12px 30px rgba(0,0,0,.18);cursor:pointer;z-index:30;min-width:170px}.cart-fab-top{font-size:14px;color:#ddd;margin-bottom:4px}.cart-fab-bottom{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:15px}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.32);display:none;z-index:40}.drawer{position:fixed;top:0;right:-480px;width:460px;height:100%;transition:right .28s ease;z-index:50;display:flex;flex-direction:column}.drawer.open{right:0}.overlay.show,.modal.show{display:flex}
+.drawer-header{display:flex;justify-content:space-between;align-items:center;padding:22px 22px 14px;border-bottom:1px solid var(--line)}.drawer-title,.modal-title{margin:0;font-family:"Playfair Display",serif}.drawer-title{font-size:24px}.modal-title{font-size:24px;margin-bottom:16px}.icon-btn{background:none;font-size:22px}
+.drawer-body{padding:12px 18px 6px;overflow:auto;flex:1 1 auto;min-height:220px}.cart-item{border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin-bottom:10px;background:#fcfcfa}.cart-name{font-weight:500;margin-bottom:6px}.cart-meta{font-size:13px;color:var(--muted);margin-bottom:10px;line-height:1.7}.cart-line{display:flex;justify-content:space-between;align-items:center;gap:12px}.cart-actions{display:flex;align-items:center;gap:8px}.delete-btn{border:none;background:none;color:#b55;cursor:pointer;font-size:13px}
+
+.drawer-footer{border-top:1px solid var(--line);padding:10px 18px 12px;background:#fff;position:sticky;bottom:0;max-height:42vh;overflow:auto;box-shadow:0 -10px 24px rgba(0,0,0,.05);}
+
+.summary-row{display:flex;justify-content:space-between;margin-bottom:8px;gap:16px}.muted{color:var(--muted)}
+.modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.4);z-index:60;padding:24px}.modal-box{width:430px;border-radius:18px;padding:26px;position:relative;max-height:90vh;overflow:auto}.modal-box.large{width:760px}
+.close-top{position:absolute;top:12px;right:12px;background:none;border:none;font-size:20px;cursor:pointer}.line-login-btn{width:100%;background:#06C755;color:#fff;border:none;border-radius:12px;padding:12px 16px;font-size:15px;cursor:pointer;margin-bottom:14px}
+.divider{text-align:center;color:#999;font-size:12px;margin:12px 0;position:relative}.divider::before,.divider::after{content:"";position:absolute;top:50%;width:35%;height:1px;background:var(--line)}.divider::before{left:0}.divider::after{right:0}
+.member-links{display:flex;justify-content:space-between;font-size:13px;margin-top:10px}.member-links a{color:#556;text-decoration:none;cursor:pointer}.checkout-list{max-height:340px;overflow:auto;border:1px solid var(--line);border-radius:12px;padding:12px;background:#fbfbf9;margin-bottom:16px}
+.bank-box{border:1px solid var(--line);border-radius:12px;padding:14px;background:#fbfbf9;line-height:1.9}.order-id-box{font-family:"Playfair Display",serif;font-size:22px;margin:8px 0 16px}.helper{font-size:13px;color:var(--muted);line-height:1.7}
+.coupon-row{display:flex;gap:10px;margin:10px 0 16px}.coupon-row input,.coupon-row select{margin:0}.success{color:#2f6f43;font-size:13px}.error{color:var(--danger);font-size:13px}
+.member-menu{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}.member-panel{border:1px solid var(--line);border-radius:12px;background:#fbfbf9;padding:14px;min-height:140px;line-height:1.8}.coupon-chip{display:inline-block;padding:4px 10px;border-radius:999px;background:#eef3ee;margin:4px 6px 0 0;font-size:12px}
+.password-wrap{position:relative}.password-wrap input{padding-right:92px}.toggle-pass-btn{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:#eef2ed;color:#455;border-radius:999px;padding:6px 10px;font-size:12px}
+.checkbox-row{display:flex;align-items:center;gap:8px;margin:8px 0 0}.checkbox-row input{width:auto}.detail-card{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff;margin-top:10px}.link-btn{background:none;border:none;color:#486a50;cursor:pointer;padding:0;font:inherit;text-decoration:underline}
+.small-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.points-card{border:1px solid #dce7dd;background:linear-gradient(180deg,#f9fcf8,#f2f7f2);border-radius:14px;padding:11px 12px;margin-bottom:12px}.points-toggle{display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #dce7dd;border-radius:12px;background:#fff;cursor:pointer}.points-toggle input{width:auto;margin-top:4px}
+@media (max-width:1100px){.product-grid{grid-template-columns:1fr}}@media (max-width:768px){.order-grid,.small-grid{grid-template-columns:1fr}.modal{padding:12px}.modal-box,.modal-box.large{width:100%}.drawer{width:100%;right:-100%}.cart-fab{left:12px;right:12px;min-width:auto}.product-card img{height:180px}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div><div class="logo">La Montagne</div><div class="tagline">Tea Inspired Dessert</div></div>
+    <div class="header-right">
+      <button class="header-pill" onclick="openModal('orderLookupModal')">查詢訂單</button>
+      <button id="memberEntryBtn" class="header-pill" onclick="openMemberEntry()">登入 / 註冊</button>
+    </div>
+  </div>
+  <div class="hero"><h1>Dessert Order</h1><p>先填訂購資料，再選擇你的山系甜點。</p></div>
+
+  <div class="section-card">
+    <h2 class="section-title">訂購資料</h2>
+    <div class="order-grid">
+      <div class="label required">姓名</div><input id="customerName" placeholder="請輸入姓名">
+      <div class="label required">電話</div><input id="customerPhone" placeholder="09XXXXXXXX" maxlength="10" oninput="normalizePhoneInput(this)">
+      <div class="label required">Email</div><input id="customerEmail" placeholder="將寄送訂單編號與明細">
+      <div class="label required">取貨日期</div><div><input id="pickupDate" type="date"><div id="pickupDateHint" class="helper" style="margin-top:6px"></div></div>
+      <div class="label required">取貨時間</div><select id="pickupTime"></select>
+      <div class="label required">取貨方式</div>
+      <select id="pickupMethod" onchange="toggleDeliveryFields()">
+        <option value="">請選擇</option><option value="自取">自取</option><option value="宅配">宅配</option><option value="超商取貨">超商取貨</option>
+      </select>
+      <div class="label hidden" id="addressLabel">宅配地址</div><input class="hidden" id="deliveryAddress" placeholder="請輸入宅配地址">
+      <div class="label hidden" id="storeLabel">超商門市</div><input class="hidden" id="storeName" placeholder="請輸入超商門市名稱">
+    </div>
+  </div>
+
+  <div class="product-grid">
+    <div class="product-card"><img src="basque.jpg"><div class="product-body"><h3 class="product-title">Original Basque</h3><div class="product-sub">原味巴斯克乳酪蛋糕</div>
+      <select id="basqueSize"><option value="240" data-key="basque4">4吋 NT$240</option><option value="880" data-key="basque6">6吋 NT$880</option><option value="1580" data-key="basque8">8吋 NT$1,580</option></select>
+      <select id="basqueMousse"><option value="阿薩姆紅茶">阿薩姆紅茶慕斯</option><option value="伯爵茶">伯爵茶慕斯</option><option value="草莓">草莓慕斯</option></select>
+      <div class="qty-row"><button class="qty-btn" onclick="minus('bq')">−</button><div class="qty-num" id="bq">1</div><button class="qty-btn" onclick="plus('bq')">＋</button></div>
+      <button class="primary-btn" onclick="addProduct('basque','basqueSize','bq','basqueMousse')">加入購物車</button>
+      <div class="stock-box"><span id="stock_text_basque4"></span><br><span id="stock_text_basque6"></span><br><span id="stock_text_basque8"></span></div></div></div>
+
+    <div class="product-card"><img src="matcha.jpg"><div class="product-body"><h3 class="product-title">Matcha Basque</h3><div class="product-sub">抹茶巴斯克乳酪蛋糕</div>
+      <select id="matchaSize"><option value="380" data-key="matcha4">4吋 NT$380</option><option value="1080" data-key="matcha6">6吋 NT$1,080</option><option value="1880" data-key="matcha8">8吋 NT$1,880</option></select>
+      <select id="matchaMousse"><option value="草莓">草莓慕斯</option></select>
+      <div class="qty-row"><button class="qty-btn" onclick="minus('mq')">−</button><div class="qty-num" id="mq">1</div><button class="qty-btn" onclick="plus('mq')">＋</button></div>
+      <button class="primary-btn" onclick="addProduct('matcha','matchaSize','mq','matchaMousse')">加入購物車</button>
+      <div class="stock-box"><span id="stock_text_matcha4"></span><br><span id="stock_text_matcha6"></span><br><span id="stock_text_matcha8"></span></div></div></div>
+
+    <div class="product-card"><img src="madeleine.jpg"><div class="product-body"><h3 class="product-title">Madeleine Box</h3><div class="product-sub">瑪德蓮禮盒</div>
+      <select id="madeleineSize"><option value="400" data-key="madeleine8">8入 NT$400</option><option value="500" data-key="madeleine10">10入 NT$500</option><option value="600" data-key="madeleine12">12入 NT$600</option></select>
+      <div class="qty-row"><button class="qty-btn" onclick="minus('gq')">−</button><div class="qty-num" id="gq">1</div><button class="qty-btn" onclick="plus('gq')">＋</button></div>
+      <button class="primary-btn" onclick="addProduct('madeleine','madeleineSize','gq',null)">加入購物車</button>
+      <div class="stock-box"><span id="stock_text_madeleine8"></span><br><span id="stock_text_madeleine10"></span><br><span id="stock_text_madeleine12"></span></div></div></div>
+  </div>
+</div>
+
+<div class="cart-fab" onclick="openCart()"><div class="cart-fab-top">購物車</div><div class="cart-fab-bottom"><span>🛒 <span id="cartCount">0</span></span><span>NT$ <span id="cartTotalFab">0</span></span></div></div>
+<div class="overlay" id="cartOverlay" onclick="closeCart()"></div>
+
+<div class="drawer" id="cartDrawer">
+  <div class="drawer-header"><h2 class="drawer-title">購物車</h2><button class="icon-btn" onclick="closeCart()">✕</button></div>
+  <div class="drawer-body"><div id="cartList"></div></div>
+  <div class="drawer-footer">
+    <div class="coupon-row"><input id="couponCode" placeholder="輸入優惠券代碼"><select id="couponSelect" onchange="syncCouponSelect()"><option value="">或選擇已領取優惠券</option></select></div>
+    <button class="secondary-btn" style="width:100%;margin-bottom:12px" onclick="applyCoupon()">套用優惠券</button>
+    <div id="couponMessage" class="muted"></div>
+    <div id="pointsCard" class="points-card hidden"></div>
+    <div class="summary-row"><span class="muted">品項數量</span><span id="cartCount2">0</span></div>
+    <div class="summary-row"><span class="muted">原總金額</span><span>NT$ <span id="cartOriginalTotal">0</span></span></div>
+    <div class="summary-row"><span class="muted">折扣</span><span>− NT$ <span id="cartDiscount">0</span></span></div>
+    <div class="summary-row"><span class="muted">應付金額</span><strong>NT$ <span id="cartTotal2">0</span></strong></div>
+    <button class="primary-btn" style="width:100%" onclick="goConfirm()">前往確認</button>
+  </div>
+</div>
+
+<div class="modal" id="memberPromptModal"><div class="modal-box"><button class="close-top" onclick="closeModal('memberPromptModal')">✕</button><h2 class="modal-title">登入會員更划算</h2><p class="helper">登入後可使用優惠券、累積點數，未來也能查詢訂單與享有會員回饋。</p><button class="primary-btn" style="width:100%;margin-bottom:10px" onclick="closeModal('memberPromptModal');openModal('memberModal')">登入 / 註冊會員</button><button class="secondary-btn" style="width:100%" onclick="openConfirmModal()">不登入，直接確認訂單</button></div></div>
+<div class="modal" id="memberModal"><div class="modal-box"><button class="close-top" onclick="closeModal('memberModal')">✕</button><h2 class="modal-title">會員登入</h2><button class="line-login-btn" onclick="loginLine()">使用 LINE 登入</button><div class="divider">或使用帳號登入</div><input id="memberEmail" placeholder="Email"><div class="password-wrap"><input id="memberPassword" type="password" placeholder="密碼"><button type="button" class="toggle-pass-btn" onclick="togglePassword('memberPassword', this)">顯示</button></div><label class="checkbox-row"><input type="checkbox" id="rememberMe"><span>記住我（記住 Email）</span></label><button class="primary-btn" style="width:100%;margin-top:12px" onclick="loginMember()">登入</button><div class="member-links"><a onclick="openRegisterModal()">註冊會員</a><a onclick="openForgotPasswordModal()">忘記密碼</a></div></div></div>
+<div class="modal" id="registerModal"><div class="modal-box"><button class="close-top" onclick="closeRegisterModal()">✕</button><h2 class="modal-title">註冊會員</h2><input id="registerName" placeholder="姓名"><input id="registerEmail" placeholder="Email（僅能註冊一次）"><input id="registerPhone" placeholder="09XXXXXXXX（僅能註冊一次）" maxlength="10" oninput="normalizePhoneInput(this)"><label class="helper" for="registerBirthday" style="display:block;margin:10px 0 6px;color:#444">生日</label><input id="registerBirthday" type="date"><div class="password-wrap"><input id="registerPassword" type="password" placeholder="密碼（至少8碼）"><button type="button" class="toggle-pass-btn" onclick="togglePassword('registerPassword', this)">顯示</button></div><div class="password-wrap"><input id="registerPasswordConfirm" type="password" placeholder="再次輸入密碼"><button type="button" class="toggle-pass-btn" onclick="togglePassword('registerPasswordConfirm', this)">顯示</button></div><div class="coupon-row"><input id="registerVerifyCode" placeholder="輸入驗證碼"><button id="sendCodeBtn" class="secondary-btn" onclick="sendEmailCode()">寄送驗證碼</button></div><div id="verifyMessage" class="muted"></div><button class="primary-btn" style="width:100%;margin-top:10px" onclick="registerMember()">建立會員</button></div></div>
+<div class="modal" id="forgotPasswordModal"><div class="modal-box"><button class="close-top" onclick="closeModal('forgotPasswordModal')">✕</button><h2 class="modal-title">忘記密碼</h2><input id="forgotEmail" placeholder="請輸入註冊 Email"><div class="coupon-row"><input id="forgotCode" placeholder="重設驗證碼"><button id="forgotCodeBtn" class="secondary-btn" onclick="requestPasswordReset()">寄送驗證碼</button></div><div class="password-wrap"><input id="forgotNewPassword" type="password" placeholder="新密碼（至少8碼）"><button type="button" class="toggle-pass-btn" onclick="togglePassword('forgotNewPassword', this)">顯示</button></div><button class="primary-btn" style="width:100%" onclick="submitForgotPassword()">重設密碼</button><div id="forgotMessage" class="muted" style="margin-top:12px"></div></div></div>
+<div class="modal" id="memberCenterModal"><div class="modal-box large"><button class="close-top" onclick="closeModal('memberCenterModal')">✕</button><h2 class="modal-title">會員中心</h2><div class="member-menu"><button class="secondary-btn" onclick="showMemberTab('orders')">訂單查詢</button><button class="secondary-btn" onclick="showMemberTab('points')">點數說明</button><button class="secondary-btn" onclick="showMemberTab('coupons')">我的優惠券</button></div><div class="member-panel" id="memberPanelContent"></div><div style="margin-top:16px"><button class="secondary-btn" onclick="logoutMember()">登出</button></div></div></div>
+<div class="modal" id="orderLookupModal"><div class="modal-box large"><button class="close-top" onclick="closeModal('orderLookupModal')">✕</button><h2 class="modal-title">訂單查詢</h2><div class="small-grid"><input id="lookupOrderId" placeholder="訂單編號"><input id="lookupEmail" placeholder="Email"></div><button class="primary-btn" style="width:100%;margin-top:8px" onclick="lookupOrderStatus()">查詢</button><div id="lookupResult" style="margin-top:14px"></div></div></div>
+<div class="modal" id="confirmModal"><div class="modal-box large"><button class="close-top" onclick="closeModal('confirmModal')">✕</button><h2 class="modal-title">訂單確認</h2><div class="checkout-list" id="confirmSummary"></div><div class="summary-row"><span class="muted">原總金額</span><span>NT$ <span id="confirmOriginalTotal">0</span></span></div><div class="summary-row"><span class="muted">折扣</span><span>− NT$ <span id="confirmDiscount">0</span></span></div><div class="summary-row"><span class="muted">應付金額</span><strong>NT$ <span id="confirmFinalTotal">0</span></strong></div><button class="primary-btn" style="width:100%;margin-top:8px" onclick="checkout()">建立訂單</button></div></div>
+<div class="modal" id="paymentModal"><div class="modal-box large"><button class="close-top" onclick="closeModal('paymentModal')">✕</button><h2 class="modal-title">訂單已建立</h2><div class="muted">訂單編號</div><div class="order-id-box" id="paymentOrderId">LM-</div><div class="checkout-list" id="paymentSummary"></div><div class="summary-row"><span class="muted">本次獲得點數</span><strong>交貨完成後由後台匯入</strong></div><div class="summary-row"><span class="muted">應付金額</span><strong>NT$ <span id="paymentTotal">0</span></strong></div><div class="bank-box">銀行轉帳<br>812 台新銀行<br>帳號：123456789123<br>戶名：La Montagne<br><br>請於 3 日內完成匯款，逾期未付款訂單將取消。</div><div style="margin-top:16px"><button class="secondary-btn" style="width:100%" onclick="openPaymentProofModalFromCreated()">填寫匯款資訊</button></div></div></div>
+<div class="modal" id="paymentProofModal"><div class="modal-box"><button class="close-top" onclick="closeModal('paymentProofModal')">✕</button><h2 class="modal-title">匯款資訊回報</h2><input id="proofOrderId" placeholder="訂單編號"><input id="proofEmail" placeholder="Email"><input id="proofPayerName" placeholder="匯款人姓名"><input id="proofBankLast5" placeholder="帳號後五碼"><input id="proofTransferTime" type="datetime-local"><button class="primary-btn" style="width:100%" onclick="submitPaymentProof()">送出匯款資訊</button><div id="paymentProofMsg" class="muted" style="margin-top:10px"></div></div></div>
+
+
+<div class="modal" id="recommendModal">
+  <div class="modal-box large">
+    <button class="close-top" onclick="closeModal('recommendModal')">✕</button>
+    <h2 class="modal-title">熱門推薦加購</h2>
+    <p class="helper">你還沒買到這些人氣品項，要一起帶走嗎？</p>
+    <div id="recommendList"></div>
+    <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
+      <button class="secondary-btn" onclick="skipRecommendAndConfirm()">先不要，直接確認訂單</button>
+    </div>
+  </div>
+</div>
+
+<script>
+
+const SCRIPT_URL="https://script.google.com/macros/s/AKfycbyaw7kRGqiMvRzjwjQOTABwslQPd2Ykn7_QezJjBKdwedfP3jLyWIl9cg2Uarz-OZJ3ig/exec";
+const LIFF_ID="YOUR_LIFF_ID";
+const defaultStock={basque4:6,basque6:6,basque8:6,matcha4:6,matcha6:6,matcha8:6,madeleine8:10,madeleine10:10,madeleine12:10};
+let currentInventoryBase={...defaultStock};
+let currentInventoryDate='';
+let cart=JSON.parse(localStorage.getItem("lm_cart")||"[]");
+let currentMember=JSON.parse(localStorage.getItem("lm_current_member")||"null");
+let appliedCoupon=null,usePoints=false,pointsToUse=0,lastCreatedOrderId="";
+let recommendShownOnce=false;
+let closedDatesSet=new Set();
+let closedDatesList=[];
+
+document.querySelectorAll('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m) closeModal(m.id)}));
+function openModal(id){document.getElementById(id).classList.add('show')}
+function closeModal(id){document.getElementById(id).classList.remove('show')}
+function saveState(){localStorage.setItem("lm_cart",JSON.stringify(cart));localStorage.setItem("lm_current_member",JSON.stringify(currentMember))}
+function normalizePhoneInput(el){let v=String(el.value||'').replace(/\D/g,'');if(!v.startsWith('09')){if(v.startsWith('9'))v='0'+v;else if(v.length>0&&!v.startsWith('0'))v='09'+v.slice(0,8);else if(v.length===0)v='09'}el.value=v.slice(0,10)}
+function togglePassword(id,btn){const i=document.getElementById(id);if(i.type==='password'){i.type='text';btn.textContent='隱藏'}else{i.type='password';btn.textContent='顯示'}}
+function toggleDeliveryFields(){const m=document.getElementById("pickupMethod").value;document.getElementById("addressLabel").classList.toggle("hidden",m!=="宅配");document.getElementById("deliveryAddress").classList.toggle("hidden",m!=="宅配");document.getElementById("storeLabel").classList.toggle("hidden",m!=="超商取貨");document.getElementById("storeName").classList.toggle("hidden",m!=="超商取貨")}
+function plus(id){document.getElementById(id).textContent=+document.getElementById(id).textContent+1}
+function minus(id){document.getElementById(id).textContent=Math.max(1,+document.getElementById(id).textContent-1)}
+function formatPrice(v){return Number(v||0).toLocaleString("zh-TW")}
+function isValidPhone(p){return /^09\d{8}$/.test(p)}
+function isValidEmail(e){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)}
+function formatDateOnly(v){if(!v) return ''; const d=new Date(v); if(!isNaN(d.getTime())) return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; return String(v).split('T')[0]}
+function formatTimeOnly(v){if(!v) return ''; if(/^\d{2}:\d{2}/.test(String(v))) return String(v).slice(0,5); const d=new Date(v); if(!isNaN(d.getTime())) return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; return String(v)}
+function formatDateTime(v){if(!v) return ''; const d=new Date(v); if(!isNaN(d.getTime())) return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`; return String(v).replace('T',' ').replace('.000Z','')}
+function formatPickupDateTime(dateVal,timeVal){return [formatDateOnly(dateVal),formatTimeOnly(timeVal)].filter(Boolean).join(' ')}
+function getNowLocalDateTimeMax(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}T${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`}
+function canSubmitPaymentProof(order){return ['未付款','待付款'].includes(String(order?.paymentStatus||'').trim())}
+
+async function loadClosedDates(){
+  const hint=document.getElementById('pickupDateHint');
+  const res=await fetch(`${SCRIPT_URL}?action=getClosedDates`).then(r=>r.json()).catch(()=>({ok:false,dates:[]}));
+  if(!res.ok){
+    closedDatesSet=new Set();
+    closedDatesList=[];
+    if(hint) hint.textContent='';
+    return;
+  }
+  const uniqueDates=[...new Set((res.dates||[]).map(d=>String(d.date||'').trim()).filter(Boolean))];
+  closedDatesList=uniqueDates;
+  closedDatesSet=new Set(uniqueDates);
+  if(hint){
+    hint.textContent=uniqueDates.length?`目前不開放日期：${uniqueDates.join('、')}`:'';
+  }
+}
+function isClosedDate(dateVal){return !!(dateVal && closedDatesSet.has(String(dateVal).trim()));}
+
+function renderHeaderMember(){const btn=document.getElementById("memberEntryBtn"); if(currentMember){btn.textContent=`會員中心｜${currentMember.name||"會員"}`;btn.onclick=openMemberCenter}else{btn.textContent="登入 / 註冊";btn.onclick=openMemberEntry}}
+function syncMemberUIState(){renderHeaderMember(); localStorage.setItem("lm_current_member", JSON.stringify(currentMember||null));}
+async function refreshMemberFromServer(){if(!currentMember||!currentMember.email)return;const res=await fetch(`${SCRIPT_URL}?action=getMember&email=${encodeURIComponent(currentMember.email)}`).then(r=>r.json()).catch(()=>({ok:false}));if(res.ok&&res.member){currentMember=res.member;saveState();syncMemberUIState();renderCouponDropdown()}}
+
+async function loadTimeSlotsForSelectedDate(resetValue=true){
+  const selectedDate=document.getElementById("pickupDate").value;
+  const select=document.getElementById("pickupTime");
+  if(!selectedDate){initTimeOptions(); return;}
+  const res=await fetch(`${SCRIPT_URL}?action=getTimeSlots&date=${encodeURIComponent(selectedDate)}`).then(r=>r.json()).catch(()=>({ok:false,slots:[]}));
+  const slots=(res.ok&&Array.isArray(res.slots)&&res.slots.length)?res.slots:[];
+  const prev=select.value;
+  select.innerHTML=['<option value="">請選擇</option>'].concat(slots.map(v=>`<option value="${v}">${v}</option>`)).join('');
+  if(!resetValue && prev && slots.includes(prev)) select.value=prev;
+}
+
+async function loadInventoryForSelectedDate(force=false){
+  const selectedDate=document.getElementById("pickupDate").value;
+  if(!selectedDate){currentInventoryDate='';currentInventoryBase={...defaultStock};renderStock();return;}
+  if(isClosedDate(selectedDate)){
+    alert('這個日期目前不開放預約，請改選其他日期。');
+    document.getElementById('pickupDate').value='';
+    currentInventoryDate='';currentInventoryBase={...defaultStock};renderStock();return;
+  }
+  if(!force&&selectedDate===currentInventoryDate){renderStock();return;}
+  currentInventoryDate=selectedDate; currentInventoryBase={...defaultStock};
+  const res=await fetch(`${SCRIPT_URL}?action=getInventory&date=${encodeURIComponent(selectedDate)}`).then(r=>r.json()).catch(()=>({ok:false}));
+  if(res.ok){
+    if(Array.isArray(res.inventory)){res.inventory.forEach(r=>{if(r.date===selectedDate&&r.productKey in currentInventoryBase) currentInventoryBase[r.productKey]=Number(r.remainingQty||0);});}
+    else if(res.date&&res.productKey){currentInventoryBase[res.productKey]=Number(res.remainingQty||0);}
+  }
+  renderStock();
+}
+function getCartReservedQty(stockKey){return cart.reduce((sum,item)=>sum + (item.stockKey===stockKey?Number(item.qty||0):0),0)}
+function displayRemaining(stockKey){const base=Number(currentInventoryBase[stockKey]??defaultStock[stockKey]??0); return Math.max(0, base-getCartReservedQty(stockKey))}
+function renderStock(){
+  document.getElementById("stock_text_basque4").textContent=`4吋還剩 ${displayRemaining('basque4')} 個！`;
+  document.getElementById("stock_text_basque6").textContent=`6吋還剩 ${displayRemaining('basque6')} 個！`;
+  document.getElementById("stock_text_basque8").textContent=`8吋還剩 ${displayRemaining('basque8')} 個！`;
+  document.getElementById("stock_text_matcha4").textContent=`4吋還剩 ${displayRemaining('matcha4')} 個！`;
+  document.getElementById("stock_text_matcha6").textContent=`6吋還剩 ${displayRemaining('matcha6')} 個！`;
+  document.getElementById("stock_text_matcha8").textContent=`8吋還剩 ${displayRemaining('matcha8')} 個！`;
+  document.getElementById("stock_text_madeleine8").textContent=`8入還剩 ${displayRemaining('madeleine8')} 盒！`;
+  document.getElementById("stock_text_madeleine10").textContent=`10入還剩 ${displayRemaining('madeleine10')} 盒！`;
+  document.getElementById("stock_text_madeleine12").textContent=`12入還剩 ${displayRemaining('madeleine12')} 盒！`;
+}
+function getTotals(){
+  let original=0,count=0; cart.forEach(i=>{original+=Number(i.price)*Number(i.qty);count+=Number(i.qty)});
+  let couponDiscount=0;
+  if(appliedCoupon==="WELCOME100"&&original>=500) couponDiscount=100;
+  if(appliedCoupon==="VIP10") couponDiscount=Math.floor(original*0.1);
+  if(appliedCoupon==="BETA50"&&original>=300) couponDiscount=50;
+  const memberPoints=Number(currentMember?.points||0), pointsRequested=Math.max(0,Number(pointsToUse||0));
+  const pointCountUsed=usePoints?Math.min(memberPoints,pointsRequested):0;
+  const pointDiscount=pointCountUsed*10;
+  return {original,count,pointCountUsed,pointDiscount,discount:couponDiscount+pointDiscount,finalTotal:Math.max(0,original-couponDiscount-pointDiscount),usedPoints:pointCountUsed};
+}
+function mergeOrPush(item){const found=cart.find(i=>i.type===item.type&&i.stockKey===item.stockKey&&(i.mousse||"")===(item.mousse||"")); if(found) found.qty+=item.qty; else cart.push(item);}
+function addProduct(type,sizeSelectId,qtyId,mousseId){
+  if(!document.getElementById("pickupDate").value){alert("請先選擇取貨日期，才能顯示正確庫存。");return;}
+  const sizeEl=document.getElementById(sizeSelectId), stockKey=sizeEl.options[sizeEl.selectedIndex].dataset.key, qty=+document.getElementById(qtyId).textContent;
+  if(displayRemaining(stockKey)<qty){alert("庫存不足");return;}
+  const names={basque:"原味巴斯克",matcha:"抹茶巴斯克",madeleine:"瑪德蓮禮盒"};
+  mergeOrPush({type,name:names[type],sizeLabel:sizeEl.options[sizeEl.selectedIndex].text,mousse:mousseId?document.getElementById(mousseId).value:"",price:+sizeEl.value,qty,stockKey});
+  saveState(); renderStock(); renderCart();
+}
+function renderCouponDropdown(){const select=document.getElementById('couponSelect'); const coupons=currentMember?.coupons||[]; select.innerHTML=`<option value="">或選擇已領取優惠券</option>`+coupons.map(c=>`<option value="${c}">${c}</option>`).join('')}
+function syncCouponSelect(){const v=document.getElementById('couponSelect').value; if(v) document.getElementById('couponCode').value=v}
+function renderPointsCard(){
+  const card=document.getElementById('pointsCard');
+  if(!currentMember){card.classList.add('hidden');card.innerHTML='';return;}
+  card.classList.remove('hidden');
+  card.innerHTML=`<div style="font-weight:500;margin-bottom:8px">會員點數折抵</div><label class="points-toggle"><input type="checkbox" ${usePoints?"checked":""} onchange="toggleUsePoints(this.checked)"><div><div style="font-weight:500">使用點數折抵本次訂單</div><div class="helper">目前可用點數：${currentMember.points||0} 點。100 元 1 點；1 點可折 10 元；滿 5 點可兌換 9 折券。</div></div></label><div class="${usePoints?"":"hidden"}" id="pointsInputWrap" style="margin-top:8px"><input id="pointsUseInput" type="number" min="1" value="${pointsToUse||""}" placeholder="請輸入欲折抵點數" oninput="changePointsToUse(this.value)"><div class="helper" id="pointsHint">${Number(pointsToUse||0)>Number(currentMember.points||0)?"點數不足":"可自由輸入點數；1 點折 10 元。"}</div></div>`;
+}
+function renderCart(){
+  const t=getTotals(), cartList=document.getElementById("cartList");
+  cartList.innerHTML=cart.length?cart.map((item,index)=>`<div class="cart-item"><div class="cart-name">${item.name}</div><div class="cart-meta">${item.sizeLabel}${item.mousse?"<br>慕斯："+item.mousse:""}</div><div class="cart-line"><div class="cart-actions"><button class="mini-btn" onclick="changeCartQty(${index},-1)">−</button><span>${item.qty}</span><button class="mini-btn" onclick="changeCartQty(${index},1)">＋</button></div><div>NT$ ${formatPrice(item.price*item.qty)}</div></div><div style="margin-top:10px"><button class="delete-btn" onclick="removeCartItem(${index})">刪除</button></div></div>`).join(""):`<div class="muted">購物車目前是空的。</div>`;
+  renderCouponDropdown(); renderPointsCard();
+  document.getElementById("cartCount").textContent=t.count;
+  document.getElementById("cartCount2").textContent=t.count;
+  document.getElementById("cartTotalFab").textContent=formatPrice(t.finalTotal);
+  document.getElementById("cartOriginalTotal").textContent=formatPrice(t.original);
+  document.getElementById("cartDiscount").textContent=formatPrice(t.discount);
+  document.getElementById("cartTotal2").textContent=formatPrice(t.finalTotal);
+  saveState();
+}
+function changeCartQty(index,delta){const item=cart[index]; if(delta===1){if(displayRemaining(item.stockKey)<1){alert("庫存不足");return} item.qty+=1;} else {if(item.qty<=1)return; item.qty-=1;} saveState(); renderStock(); renderCart();}
+function removeCartItem(index){cart.splice(index,1); saveState(); renderStock(); renderCart();}
+function openCart(){document.getElementById("cartDrawer").classList.add("open");document.getElementById("cartOverlay").classList.add("show")}
+function closeCart(){document.getElementById("cartDrawer").classList.remove("open");document.getElementById("cartOverlay").classList.remove("show")}
+function openMemberEntry(){syncMemberUIState(); currentMember?openMemberCenter():openModal('memberModal')}
+function openRegisterModal(){closeModal('memberModal');resetRegisterForm();openModal('registerModal')}
+function openForgotPasswordModal(){closeModal('memberModal');openModal('forgotPasswordModal')}
+function closeRegisterModal(){closeModal('registerModal');resetRegisterForm()}
+function resetRegisterForm(){["registerName","registerEmail","registerPhone","registerBirthday","registerPassword","registerPasswordConfirm","registerVerifyCode"].forEach(id=>document.getElementById(id).value="");document.getElementById("verifyMessage").textContent="";const btn=document.getElementById("sendCodeBtn");btn.disabled=false;btn.textContent="寄送驗證碼"}
+function startCountdownOnButton(btnId,seconds,doneText){const btn=document.getElementById(btnId);btn.disabled=true;let remain=seconds;btn.textContent=`${remain}s`;const timer=setInterval(()=>{remain-=1;if(remain<=0){clearInterval(timer);btn.disabled=false;btn.textContent=doneText}else btn.textContent=`${remain}s`},1000)}
+async function sendEmailCode(){const email=document.getElementById("registerEmail").value.trim(), msg=document.getElementById("verifyMessage"); if(!email){msg.className="error";msg.textContent="請先輸入 Email";return} if(!isValidEmail(email)){msg.className="error";msg.textContent="Email 格式不正確";return} const res=await fetch(SCRIPT_URL,{method:"POST",body:JSON.stringify({action:"sendCode",email})}).then(r=>r.json()).catch(()=>({ok:false,message:"寄送失敗"})); msg.className=res.ok?"success":"error"; msg.textContent=res.ok?"驗證碼已寄出，請查看信箱。":(res.message||"寄送失敗"); if(res.ok||res.remainingSeconds) startCountdownOnButton("sendCodeBtn",Number(res.remainingSeconds||180),"寄送驗證碼")}
+async function requestPasswordReset(){const email=document.getElementById("forgotEmail").value.trim(), msg=document.getElementById("forgotMessage"); if(!email){msg.className="error";msg.textContent="請輸入 Email";return} const res=await fetch(SCRIPT_URL,{method:"POST",body:JSON.stringify({action:"requestPasswordReset",email})}).then(r=>r.json()).catch(()=>({ok:false,message:"寄送失敗"})); msg.className=res.ok?"success":"error"; msg.textContent=res.ok?"已寄送重設密碼驗證碼，請查看 Email。":(res.message||"寄送失敗"); if(res.ok||res.remainingSeconds) startCountdownOnButton("forgotCodeBtn",Number(res.remainingSeconds||180),"寄送驗證碼")}
+async function registerMember(){const name=document.getElementById("registerName").value.trim(),email=document.getElementById("registerEmail").value.trim(),phone=document.getElementById("registerPhone").value.trim(),birthday=document.getElementById("registerBirthday").value,password=document.getElementById("registerPassword").value.trim(),passwordConfirm=document.getElementById("registerPasswordConfirm").value.trim(),verifyCode=document.getElementById("registerVerifyCode").value.trim(); if(!name||!email||!birthday||!password||!passwordConfirm){alert("請完整填寫必填欄位");return} if(!isValidEmail(email)){alert("Email 格式不正確");return} if(phone&&!isValidPhone(phone)){alert("手機格式需為 09 開頭，共 10 碼");return} if(password.length<8){alert("密碼至少需 8 碼");return} if(password!==passwordConfirm){alert("兩次輸入的密碼不一致");return} const verifyRes=await fetch(SCRIPT_URL,{method:"POST",body:JSON.stringify({action:"verifyCode",email,code:verifyCode})}).then(r=>r.json()).catch(()=>({ok:false,message:"驗證失敗"})); if(!verifyRes.ok){alert(verifyRes.message||"驗證碼錯誤");return} const registerRes=await fetch(SCRIPT_URL,{method:"POST",body:JSON.stringify({action:"registerMember",name,email,phone,birthday,password})}).then(r=>r.json()).catch(()=>({ok:false,message:"註冊失敗"})); if(!registerRes.ok){alert(registerRes.message||"註冊失敗");return} currentMember=registerRes.member; saveState(); fillCustomerInfoFromMember(currentMember); renderHeaderMember(); renderCart(); alert("註冊成功，已自動登入"); closeRegisterModal();}
+async function loginMember(){const email=document.getElementById("memberEmail").value.trim(),password=document.getElementById("memberPassword").value.trim(); if(!email||!password){alert("請輸入 Email 與密碼");return} const res=await fetch(SCRIPT_URL,{method:"POST",body:JSON.stringify({action:"loginMember",email,password})}).then(r=>r.json()).catch(()=>({ok:false,message:"登入失敗"})); if(!res.ok){alert(res.message||"登入失敗");return} currentMember=res.member; if(document.getElementById("rememberMe").checked) localStorage.setItem("lm_remember_email",email); else localStorage.removeItem("lm_remember_email"); saveState(); fillCustomerInfoFromMember(currentMember); syncMemberUIState(); renderCart(); alert("登入成功"); closeModal('memberModal')}
+async function loginLine(){alert("LINE 登入功能建置中，請會員先使用信箱登入，謝謝");}
+async function claimCoupon(code){if(!currentMember||!currentMember.email){alert("請先登入會員");return} const res=await fetch(SCRIPT_URL,{method:"POST",body:JSON.stringify({action:"claimCoupon",email:currentMember.email,couponCode:code})}).then(r=>r.json()).catch(()=>({ok:false,message:"領取失敗"})); if(!res.ok){alert(res.message||"領取失敗");return} currentMember.coupons=res.coupons||[]; saveState(); syncMemberUIState(); renderCouponDropdown(); await refreshMemberFromServer(); await showMemberTab("coupons"); alert(`已成功領取 ${code}`)}
+function openMemberCenter(){if(!currentMember){openModal('memberModal');return} showMemberTab("orders"); openModal('memberCenterModal')}
+function renderPointTransactions(){const tx=currentMember?.pointTransactions||[]; if(!tx.length) return `<div class="helper">目前尚無點數明細。若後台已升級點數流水，這裡會顯示入帳日與到期日。</div>`; return tx.map(t=>`<div class="detail-card"><strong>+${t.points||0} 點</strong><br>入帳日：${formatDateTime(t.creditedAt||t.date||'')}<br>到期日：${formatDateOnly(t.expiresAt||'')}</div>`).join('')}
+function renderOrderDetail(order,showCancelButton=false){const itemsHtml=(order.items||[]).map(item=>`<div class="detail-card"><strong>${item.name}</strong><br><span class="muted">${item.sizeLabel||""}${item.mousse?"｜慕斯："+item.mousse:""}</span><br>數量 x${item.qty} ｜ 小計 NT$ ${formatPrice((item.price||0)*(item.qty||0))}</div>`).join(""); const paymentButton=canSubmitPaymentProof(order)?`<div style="margin-top:12px"><button class="secondary-btn" onclick="openPaymentProofFromOrder('${order.orderId}','${order.email}')">填寫匯款資訊</button></div>`:''; const cancelButton=showCancelButton&&order.orderStatus!=="已取消"?`<div style="margin-top:10px"><button class="secondary-btn" onclick="cancelOwnOrder('${order.orderId}','${order.email}')">取消此訂單</button></div>`:''; return `<div class="detail-card"><strong>訂單編號：</strong>${order.orderId}<br><strong>Email：</strong><a href="mailto:${order.email}">${order.email}</a><br><strong>建立時間：</strong>${formatDateTime(order.createdAt||"")}<br><strong>取貨時間：</strong>${formatPickupDateTime(order.pickupDate,order.pickupTime)}<br><strong>取貨方式：</strong>${order.pickupMethod||""}<br><strong>付款狀態：</strong>${order.paymentStatus||""}<br><strong>訂單狀態：</strong>${order.orderStatus||""}<br><strong>匯款人：</strong>${order.payerName||"尚未填寫"}<br><strong>帳號後五碼：</strong>${order.bankLast5||"尚未填寫"}<br><strong>匯款時間：</strong>${order.transferTime?formatDateTime(order.transferTime):"尚未填寫"}<br><strong>折扣：</strong>NT$ ${formatPrice(order.discount||0)}<br><strong>實付金額：</strong>NT$ ${formatPrice(order.finalTotal||0)}${cancelButton}</div><div style="margin-top:10px"><strong>訂單明細</strong>${itemsHtml||"<div class='detail-card'>沒有品項資料</div>"}</div>${paymentButton}`;}
+async function showMemberTab(tab){const box=document.getElementById("memberPanelContent"); if(!currentMember){box.innerHTML="目前尚未登入會員。";return} if(tab==="orders"){const res=await fetch(`${SCRIPT_URL}?action=getOrders&email=${encodeURIComponent(currentMember.email||"")}`).then(r=>r.json()).catch(()=>({ok:false,orders:[]})); const myOrders=res.orders||[]; box.innerHTML=myOrders.length?myOrders.map(o=>`<div class="detail-card"><button class="link-btn" onclick='showMemberOrderDetail(${JSON.stringify(o).replace(/'/g,"&apos;")})'>${o.orderId}</button><br>金額：NT$ ${formatPrice(o.finalTotal)}<br>取貨時間：${formatPickupDateTime(o.pickupDate,o.pickupTime)}<br>狀態：${o.orderStatus||"待確認"}</div>`).join(""):`<span class="muted">目前尚無訂單紀錄</span>`} if(tab==="points"){const pointHtml=await renderPointTransactions(); box.innerHTML=`<strong>${currentMember.name||"會員"}</strong><br>目前點數：${currentMember.points||0} 點<br><br>點數規則：<br>100 元 1 點<br>1 點可折 10 元<br>滿 5 點可兌換 9 折券<br><br><button class="secondary-btn" onclick="exchangePointsCoupon()">使用 5 點兌換 9 折券</button><br><br><strong>點數明細</strong><br>${pointHtml}`;} if(tab==="coupons"){const owned=currentMember.coupons||[]; const quick=[['WELCOME100','領取 WELCOME100']].filter(([code])=>!owned.includes(code)); box.innerHTML=`<strong>${currentMember.name||"會員"}</strong><br><br><strong>我的優惠券</strong><br>${owned.length?owned.map(c=>`<span class="coupon-chip">${c}</span>`).join(""):`<span class="muted">目前沒有可用優惠券</span>`}<br><br>${quick.length?`<strong>快速領取</strong><br>${quick.map(([code,label])=>`<button class="secondary-btn" onclick="claimCoupon('${code}')">${label}</button>`).join("")}`:`<span class="muted">可快速領取的優惠券都已領取完成。</span>`}`;}}
+function showMemberOrderDetail(order){document.getElementById("memberPanelContent").innerHTML=`<button class="secondary-btn" onclick="showMemberTab('orders')" style="margin-bottom:12px">返回訂單列表</button>${renderOrderDetail(order,true)}`}
+async function cancelOwnOrder(orderId,email){if(!confirm("是否確定要取消此筆訂單？")) return; if(!confirm("取消後若有庫存、排程與付款作業，可能需要重新處理。確定仍要取消嗎？")) return; const res=await fetch(SCRIPT_URL,{method:"POST",body:JSON.stringify({action:"cancelOrderByCustomer",orderId,email})}).then(r=>r.json()).catch(()=>({ok:false,message:"取消失敗"})); alert(res.ok?"訂單已取消":(res.message||"取消失敗")); if(res.ok){await loadInventoryForSelectedDate(true); showMemberTab('orders');}}
+async function exchangePointsCoupon(){if(!currentMember||!currentMember.email)return; const res=await fetch(SCRIPT_URL,{method:"POST",body:JSON.stringify({action:"exchangePointsForCoupon",email:currentMember.email})}).then(r=>r.json()).catch(()=>({ok:false,message:"兌換失敗"})); alert(res.message || (res.ok?"兌換成功":"兌換失敗")); if(res.ok){await refreshMemberFromServer(); await showMemberTab("coupons"); renderCart();}}
+function logoutMember(){currentMember=null;saveState();syncMemberUIState();renderCart();closeModal('memberCenterModal');alert("已登出")}
+function fillCustomerInfoFromMember(member){document.getElementById("customerName").value=member.name||""; document.getElementById("customerPhone").value=member.phone||"09"; document.getElementById("customerEmail").value=member.email||""; document.getElementById("pickupDate").value=""; document.getElementById("pickupTime").value=""; document.getElementById("pickupMethod").value=""; document.getElementById("deliveryAddress").value=""; document.getElementById("storeName").value=""; currentInventoryDate=''; currentInventoryBase={...defaultStock}; toggleDeliveryFields(); renderStock();}
+function applyCoupon(){const code=document.getElementById("couponCode").value.trim().toUpperCase(),msg=document.getElementById("couponMessage"); if(!currentMember){msg.className="error";msg.textContent="請先登入會員後再使用優惠券。";appliedCoupon=null;renderCart();return} const owned=currentMember.coupons||[], totalsBefore=cart.reduce((sum,item)=>sum+Number(item.price)*Number(item.qty),0); if(!owned.includes(code)){msg.className="error";msg.textContent="你的帳號目前沒有這張優惠券。";appliedCoupon=null;renderCart();return} if(code==="WELCOME100"&&totalsBefore<500){msg.className="error";msg.textContent="WELCOME100 需滿 NT$500 才可使用。";appliedCoupon=null;renderCart();return} if(code==="BETA50"&&totalsBefore<300){msg.className="error";msg.textContent="BETA50 需滿 NT$300 才可使用。";appliedCoupon=null;renderCart();return} appliedCoupon=code; msg.className="success"; msg.textContent=`已套用 ${code}`; renderCart();}
+function toggleUsePoints(checked){usePoints=checked;if(!checked)pointsToUse=0;renderCart()}
+function changePointsToUse(v){pointsToUse=Math.max(0,Number(v||0)); const hint=document.getElementById('pointsHint'); if(hint) hint.textContent=pointsToUse>Number(currentMember?.points||0)?"點數不足":"可自由輸入點數；1 點折 10 元。";}
+function validateOrderInfo(){const name=document.getElementById("customerName").value.trim(),phone=document.getElementById("customerPhone").value.trim(),email=document.getElementById("customerEmail").value.trim(),pickupDate=document.getElementById("pickupDate").value,pickupTime=document.getElementById("pickupTime").value,pickupMethod=document.getElementById("pickupMethod").value,address=document.getElementById("deliveryAddress").value.trim(),store=document.getElementById("storeName").value.trim(); if(!name||!phone||!email||!pickupDate||!pickupTime||!pickupMethod){alert("請完整填寫必填欄位");return false}
+if(isClosedDate(pickupDate)){alert('這個日期目前不開放預約，請改選其他日期');return false} if(!isValidPhone(phone)){alert("電話需為 09 開頭，共 10 碼");return false} if(!isValidEmail(email)){alert("Email 格式不正確");return false} if(pickupMethod==="宅配"&&!address){alert("請輸入宅配地址");return false} if(pickupMethod==="超商取貨"&&!store){alert("請輸入超商門市");return false} if(usePoints&&Number(pointsToUse||0)>Number(currentMember?.points||0)){alert("點數不足");return false} if(cart.length===0){alert("購物車是空的");return false} return true}
+function buildRecommendations(){const types=[...new Set(cart.map(i=>i.type))], rec=[]; if(!types.includes('madeleine')) rec.push({title:'瑪德蓮禮盒',desc:'人氣茶點，適合一起搭配。',action:`addProduct('madeleine','madeleineSize','gq',null)`}); if(!types.includes('basque')) rec.push({title:'原味巴斯克',desc:'經典人氣款，很多人會一起帶。',action:`addProduct('basque','basqueSize','bq','basqueMousse')`}); if(!types.includes('matcha')) rec.push({title:'抹茶巴斯克',desc:'濃郁茶感，非常適合加購。',action:`addProduct('matcha','matchaSize','mq','matchaMousse')`}); return rec}
+function goConfirm(){if(!validateOrderInfo()) return; if(!currentMember){openModal('memberPromptModal');return} const recs=buildRecommendations(); if(recs.length&&!recommendShownOnce){recommendShownOnce=true; document.getElementById('recommendList').innerHTML=recs.map(r=>`<div class="detail-card"><strong>${r.title}</strong><br><span class="muted">${r.desc}</span><div style="margin-top:10px"><button class="primary-btn" onclick="${r.action};closeModal('recommendModal');openConfirmModal();">加購這個</button></div></div>`).join(''); openModal('recommendModal'); return} openConfirmModal()}
+function skipRecommendAndConfirm(){closeModal('recommendModal');openConfirmModal()}
+function openConfirmModal(){const t=getTotals(); document.getElementById("confirmSummary").innerHTML=cart.map(item=>`<div style="margin-bottom:10px"><strong>${item.name}</strong><br><span class="muted">${item.sizeLabel}${item.mousse?"｜慕斯："+item.mousse:""}</span><br>數量 x${item.qty} ｜ 小計 NT$ ${formatPrice(item.price*item.qty)}</div>`).join(""); document.getElementById("confirmOriginalTotal").textContent=formatPrice(t.original); document.getElementById("confirmDiscount").textContent=formatPrice(t.discount); document.getElementById("confirmFinalTotal").textContent=formatPrice(t.finalTotal); openModal('confirmModal')}
+async function checkout(){if(!validateOrderInfo()) return; const totals=getTotals(); const res=await fetch(SCRIPT_URL,{method:"POST",body:JSON.stringify({action:"createOrder",memberId:currentMember?(currentMember.memberId||""):"",memberEmail:currentMember?(currentMember.email||""):"",customerName:document.getElementById("customerName").value.trim(),phone:document.getElementById("customerPhone").value.trim(),email:document.getElementById("customerEmail").value.trim(),pickupDate:document.getElementById("pickupDate").value,pickupTime:document.getElementById("pickupTime").value,pickupMethod:document.getElementById("pickupMethod").value,address:document.getElementById("deliveryAddress").value.trim(),store:document.getElementById("storeName").value.trim(),items:cart,couponCode:appliedCoupon||"",usedPoints:totals.usedPoints,originalTotal:totals.original})}).then(r=>r.json()).catch(()=>({ok:false,message:"建立訂單失敗"})); if(!res.ok){alert(res.message||"建立訂單失敗"); await loadInventoryForSelectedDate(true); return} 
+
+alert("您已完成訂單，請於 3 日內完成付款");
+
+lastCreatedOrderId=res.orderId; document.getElementById("paymentOrderId").textContent=res.orderId; document.getElementById("paymentTotal").textContent=formatPrice(res.finalTotal); document.getElementById("paymentSummary").innerHTML=cart.map(item=>`<div style="margin-bottom:10px"><strong>${item.name}</strong><br><span class="muted">${item.sizeLabel}${item.mousse?"｜慕斯："+item.mousse:""}</span><br>數量 x${item.qty} ｜ 小計 NT$ ${formatPrice(item.price*item.qty)}</div>`).join(""); cart=[]; usePoints=false; pointsToUse=0; appliedCoupon=null; document.getElementById("couponCode").value=""; document.getElementById("couponMessage").textContent=""; saveState(); renderCart(); closeCart(); closeModal('confirmModal'); await refreshMemberFromServer(); await loadInventoryForSelectedDate(true); syncMemberUIState(); openModal('paymentModal')}
+function openPaymentProofFromOrder(orderId,email){document.getElementById("proofOrderId").value=orderId||""; document.getElementById("proofEmail").value=email||""; document.getElementById("proofTransferTime").max=getNowLocalDateTimeMax(); openModal('paymentProofModal')}
+function openPaymentProofModalFromCreated(){closeModal('paymentModal'); document.getElementById("proofOrderId").value=lastCreatedOrderId||""; document.getElementById("proofEmail").value=document.getElementById("customerEmail").value.trim(); document.getElementById("proofTransferTime").max=getNowLocalDateTimeMax(); openModal('paymentProofModal')}
+async function submitPaymentProof(){const orderId=document.getElementById("proofOrderId").value.trim(),email=document.getElementById("proofEmail").value.trim(),payerName=document.getElementById("proofPayerName").value.trim(),bankLast5=document.getElementById("proofBankLast5").value.trim(),transferTime=document.getElementById("proofTransferTime").value.trim(),msgEl=document.getElementById("paymentProofMsg"); if(!payerName||!bankLast5||!transferTime){msgEl.className='error';msgEl.textContent='請完整填寫所有必填欄位';return} if(!/^\d{5}$/.test(bankLast5)){msgEl.className='error';msgEl.textContent='帳號後五碼需為 5 位數字';return} if(transferTime>getNowLocalDateTimeMax()){msgEl.className='error';msgEl.textContent='匯款時間不得晚於現在';return} const res=await fetch(SCRIPT_URL,{method:"POST",body:JSON.stringify({action:"submitPaymentProof",orderId,email,payerName,bankLast5,transferTime})}).then(r=>r.json()).catch(()=>({ok:false,message:"送出失敗"})); msgEl.className=res.ok?"success":"error"; msgEl.textContent=res.message||(res.ok?"已送出":"送出失敗")}
+async function lookupOrderStatus(){const orderId=document.getElementById("lookupOrderId").value.trim(),email=document.getElementById("lookupEmail").value.trim(),box=document.getElementById("lookupResult"); const res=await fetch(`${SCRIPT_URL}?action=getOrderStatus&orderId=${encodeURIComponent(orderId)}&email=${encodeURIComponent(email)}`).then(r=>r.json()).catch(()=>({ok:false,message:"查詢失敗"})); if(!res.ok){box.innerHTML=`<div class="error">${res.message||"查詢失敗"}</div>`;return} box.innerHTML=renderOrderDetail(res.order,true)}
+async function submitForgotPassword(){const res=await fetch(SCRIPT_URL,{method:"POST",body:JSON.stringify({action:"resetPassword",email:document.getElementById("forgotEmail").value.trim(),code:document.getElementById("forgotCode").value.trim(),newPassword:document.getElementById("forgotNewPassword").value.trim()})}).then(r=>r.json()).catch(()=>({ok:false,message:"重設失敗"})); document.getElementById("forgotMessage").className=res.ok?"success":"error"; document.getElementById("forgotMessage").textContent=res.message||(res.ok?"密碼已重設":"重設失敗")}
+function initTimeOptions(){const select=document.getElementById('pickupTime'), opts=['']; for(let h=0;h<24;h++){['00','30'].forEach(m=>opts.push(`${String(h).padStart(2,'0')}:${m}`))} select.innerHTML=opts.map(v=>`<option value="${v}">${v||'請選擇'}</option>`).join('')}
+async function init(){
+  initTimeOptions();
+  const today=new Date(); today.setHours(0,0,0,0);
+  const tomorrow=new Date(today.getTime()+24*60*60*1000);
+
+  document.getElementById("registerBirthday").max=new Date().toISOString().split("T")[0];
+  document.getElementById("proofTransferTime").max=getNowLocalDateTimeMax();
+  document.getElementById("customerPhone").value="09";
+  const remembered=localStorage.getItem("lm_remember_email");
+  if(remembered) document.getElementById("memberEmail").value=remembered;
+
+  await loadClosedDates();
+
+  const pickupDateInput=document.getElementById("pickupDate");
+  pickupDateInput.min=tomorrow.toISOString().split("T")[0];
+  pickupDateInput.addEventListener("change", async ()=>{
+    const v=pickupDateInput.value;
+    if(isClosedDate(v)){
+      alert("這個日期目前不開放預約，請改選其他日期");
+      pickupDateInput.value="";
+      currentInventoryDate='';currentInventoryBase={...defaultStock};renderStock();
+      initTimeOptions();
+      return;
+    }
+    await loadInventoryForSelectedDate(true);
+    await loadTimeSlotsForSelectedDate(true);
+  });
+
+  renderStock();
+  renderCart();
+  syncMemberUIState();
+  toggleDeliveryFields();
+
+  if(currentMember) fillCustomerInfoFromMember(currentMember);
+}
+init();
+
+</script>
+</body></html>
