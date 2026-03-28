@@ -217,7 +217,7 @@ async function loadTimeSlotsForSelectedDate(resetValue = true) {
   select.innerHTML = '<option value="">載入可選時段中...</option>';
 
   const res = await fetch(
-    ${SCRIPT_URL}?action=getTimeSlots&date=${encodeURIComponent(selectedDate)}
+    `${SCRIPT_URL}?action=getTimeSlots&date=${encodeURIComponent(selectedDate)}`
   )
     .then(r => r.json())
     .catch(() => ({ ok: false, slots: [] }));
